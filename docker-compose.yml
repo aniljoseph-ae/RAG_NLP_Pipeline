@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+  api:
+    build: .
+    environment:
+      - ULTRA_SAFE_API_KEY=${ULTRA_SAFE_API_KEY}
+      - ULTRA_SAFE_BASE_URL=${ULTRA_SAFE_BASE_URL}
+      - REDIS_URL=redis://redis:6379/0
+      - CHROMA_DB_PATH=/app/chroma_db
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./chroma_db:/app/chroma_db
+    depends_on:
+      - redis
+      - celery_worker
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+
+  celery_worker:
+    build: .
+    command: python -m app.worker
+    environment:
+      - ULTRA_SAFE_API_KEY=${ULTRA_SAFE_API_KEY}
+      - ULTRA_SAFE_BASE_URL=${ULTRA_SAFE_BASE_URL}
+      - REDIS_URL=redis://redis:6379/0
+      - CHROMA_DB_PATH=/app/chroma_db
+    volumes:
+      - ./chroma_db:/app/chroma_db
+    depends_on:
+      - redis
+
+volumes:
+  redis-data:

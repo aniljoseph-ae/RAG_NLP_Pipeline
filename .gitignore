@@ -1,0 +1,23 @@
+# Environment
+.env
+.venv
+venv/
+
+# ChromaDB
+chroma_db/
+
+# Redis
+dump.rdb
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Docker
+docker-compose.override.yml
+
+# IDE
+.vscode/
+.idea/
